@@ -81,11 +81,18 @@ public class RoomsController : ControllerBase
     public IActionResult DeleteRoom(int id)
     {
         var room = Database.Rooms.FirstOrDefault(x => x.Id == id);
-
+        
         if (room == null)
         {
             return NotFound($"Nie znaleziono sali o ID: {id}");
         }
+        
+        var hasReservation = Database.Reservations.Any(x => x.RoomId == id);
+        if (hasReservation)
+        {
+            return Conflict($"Nie można usunąć sali, ponieważ ma przypisane rezerwacje.");
+        }
+        
         Database.Rooms.Remove(room);
         return NoContent();
     }
