@@ -51,7 +51,7 @@ public class RoomsController : ControllerBase
     [HttpPost]
     public IActionResult CreateRoom([FromBody] Room room)
     {
-        var maxId = Database.Rooms.Max(x => x.Id);
+        var maxId = Database.Rooms.Any() ? Database.Rooms.Max(x => x.Id) : 0;
         room.Id = maxId + 1;
         Database.Rooms.Add(room);
         return CreatedAtAction(nameof(GetRoom), new { id = maxId + 1 }, room);

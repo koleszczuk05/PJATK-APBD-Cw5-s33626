@@ -62,7 +62,7 @@ public class ReservationsController : ControllerBase
             return Conflict("Sala jest zajęta w wybranym terminie");
         }
         
-        var maxId = Database.Reservations.Max(x => x.Id);
+        var maxId = Database.Reservations.Any() ? Database.Reservations.Max(x => x.Id) : 0;
         reservation.Id = maxId + 1;
         Database.Reservations.Add(reservation);
         return CreatedAtAction(nameof(GetReservation), new { id = maxId + 1 }, reservation);
@@ -107,7 +107,7 @@ public class ReservationsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{Id:int}")]
+    [HttpDelete("{id:int}")]
     public IActionResult DeleteReservation(int id)
     {
         var reservation = Database.Reservations.FirstOrDefault(x => x.Id == id);
@@ -117,7 +117,7 @@ public class ReservationsController : ControllerBase
         }
         
         Database.Reservations.Remove(reservation);
-        return Ok("Usunięto podaną rezerwacje");
+        return NoContent();
     }
     
 }

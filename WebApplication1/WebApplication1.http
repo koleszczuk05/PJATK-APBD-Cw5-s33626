@@ -1,6 +1,78 @@
-@WebApplication1_HostAddress = http://localhost:5018
+@host = http://localhost:5018
 
-GET {{WebApplication1_HostAddress}}/weatherforecast/
+### 1. Pobranie wszystkich sal przez GET /api/rooms.
+GET {{host}}/api/rooms
 Accept: application/json
 
-###
+### 2. Pobranie jednej sali po identyfikatorze.
+GET {{host}}/api/rooms/2
+Accept: application/json
+
+### 3. Pobranie sal po kodzie budynku przekazanym w trasie.
+GET {{host}}/api/rooms/building/B
+Accept: application/json
+
+### 4. Filtrowanie sal przez query string.
+GET {{host}}/api/rooms?minCapacity=20&hasProjector=true&activeOnly=true
+Accept: application/json
+
+### 5. Dodanie nowej sali przez POST.
+POST {{host}}/api/rooms
+Content-Type: application/json
+
+{
+  "name": "Lab 204",
+  "buildingCode": "B",
+  "floor": 2,
+  "capacity": 24,
+  "hasProjector": true,
+  "isActive": true
+}
+
+### 6. Aktualizacja istniejącej sali przez PUT.
+PUT {{host}}/api/rooms/2
+Content-Type: application/json
+
+{
+  "name": "Lab 204",
+  "buildingCode": "B",
+  "floor": 2,
+  "capacity": 30,
+  "hasProjector": true,
+  "isActive": true
+}
+
+### 7. Dodanie rezerwacji poprawnej biznesowo.
+POST {{host}}/api/reservations
+Content-Type: application/json
+
+{
+  "roomId": 2,
+  "organizerName": "Anna Kowalska",
+  "topic": "Warsztaty z HTTP i REST",
+  "date": "2026-05-10",
+  "startTime": "10:00:00",
+  "endTime": "12:30:00",
+  "status": "confirmed"
+}
+
+### 8. Próba dodania rezerwacji kolidującej czasowo i sprawdzenie 409 Conflict.
+POST {{host}}/api/reservations
+Content-Type: application/json
+
+{
+  "roomId": 2,
+  "organizerName": "Anna Kowalska",
+  "topic": "Warsztaty z HTTP i REST",
+  "date": "2026-05-10",
+  "startTime": "10:00:00",
+  "endTime": "12:30:00",
+  "status": "confirmed"
+}
+
+### 9. Usunięcie rezerwacji przez DELETE.
+DELETE {{host}}/api/reservations/1
+
+### 10. Sprawdzenie odpowiedzi 404 Not Found dla nieistniejącego zasobu.
+GET {{host}}/api/rooms/9999
+Accept: application/json
