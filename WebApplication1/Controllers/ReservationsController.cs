@@ -106,4 +106,18 @@ public class ReservationsController : ControllerBase
         
         return NoContent();
     }
+
+    [HttpDelete("{Id:int}")]
+    public IActionResult DeleteReservation(int id)
+    {
+        var reservation = Database.Reservations.FirstOrDefault(x => x.Id == id);
+        if (reservation == null)
+        {
+            return NotFound("Taka rezerwacja nie istnieje :)");
+        }
+        
+        Database.Reservations.Remove(reservation);
+        return Ok("Usunięto podaną rezerwacje");
+    }
+    
 }
